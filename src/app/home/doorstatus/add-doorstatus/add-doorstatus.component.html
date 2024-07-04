@@ -1,0 +1,30 @@
+<form [formGroup]="reactiveForm_add_doorstatus " (ngSubmit)="onSubmit_add_doorstatus ()" #form_add_doorstatus="ngForm"
+    class="row">
+
+    <!-- name field avec un control de validite -->
+    <div class="form-group col-sm-6">
+        <label>name</label>
+        <input class="form-control" type="text" formControlName="name" placeholder="name"
+            [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
+        <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+            <div *ngIf="f.name.errors.required"> name est obligatoire </div>
+        </div>
+    </div>
+    <!-- state field avec un control de validite -->
+    <div class="form-group col-sm-6">
+        <label>state</label>
+        <select class="form-select" id="" formControlName="state" [ngClass]="{ 'is-invalid': submitted && f.state.errors }" >
+            <option value="closed">closed</option>
+        </select>
+        <div *ngIf="submitted && f.state.errors" class="invalid-feedback">
+            <div *ngIf="f.state.errors.required"> state est obligatoire </div>
+        </div>
+    </div>
+</form>
+<!-- vous pouvez valider votre formulaire n'importe ou -->
+
+<div class="text-center m-2">
+    <button type="button" class="btn btn-primary m-2" [disabled]="loading_add_doorstatus "
+        (click)="form_add_doorstatus .ngSubmit.emit()">{{loading_add_doorstatus ?"En cours ...":"Valider"}}</button>
+    <button class="btn btn-secondary m-2" type="reset" (click)="onReset_add_doorstatus ()">Vider</button>
+</div>

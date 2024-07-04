@@ -1,0 +1,124 @@
+<div *ngIf="api.latestSensorData && api.latestSensorData?.water" class="container mb-5 mt-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-center mt-3">Water Level Detection</h1>
+      <div class="alert-waterlevel"
+        [ngClass]="{'show': alert, 
+        'bg-waterlevel-detected': api.latestSensorData?.water === 'alert', 
+        'bg-waterlevel-stopped': api.latestSensorData?.water === 'stoped'}">
+        <div>
+          <p *ngIf="api.latestSensorData?.water === 'alert'">Attention Niveau d'eau élevé!</p>
+          <p *ngIf="api.latestSensorData?.water === 'stoped'">Niveau d'eau normal!</p>
+        </div>
+        <!-- <button type="button" class="btn-close" aria-label="Close" (click)="alert = false">×</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="!api.latestSensorData || !api.latestSensorData?.water" class="container mb-5 mt-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-center mt-3">Water Level Detection</h1>
+      <div class="alert-waterlevel"
+        [ngClass]="{'show': alert, 
+        'bg-waterlevel-detected': les_waterlevelsensorss[0]?.state === 'alert', 
+        'bg-waterlevel-stopped': les_waterlevelsensorss[0]?.state === 'stoped'}">
+        <div>
+          <p *ngIf="les_waterlevelsensorss[0]?.state === 'alert'">Attention Niveau d'eau élevé!</p>
+          <p *ngIf="les_waterlevelsensorss[0]?.state === 'stoped'">Niveau d'eau normal!</p>
+        </div>
+        <!-- <button type="button" class="btn-close" aria-label="Close" (click)="alert = false">×</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="container mb-3">
+  <div class="row g-2">
+    <!-- states -->
+    <!-- <div class="col-md">
+      <div class="form-floating">
+        <select class="form-select" id="floatingSelectGrid" [(ngModel)]="filterCriteria.states">
+          <option value="">All</option>
+          <option value='Motion detected!'>Motion detected</option>
+          <option value='Motion stopped!'>Motion stopped</option>
+        </select>
+        <label for="floatingSelectGrid">States</label>
+      </div>
+    </div> -->
+    <!-- Date/Time from -->
+    <div class="col-md">
+      <div class="form-floating">
+        <input [(ngModel)]="filterCriteria.dateFrom" type="datetime-local" class="form-control" id="floatingInputGrid">
+        <label for="floatingInputGrid">Date/Time De</label>
+      </div>
+    </div>
+    <!-- Date/time to -->
+    <div class="col-md">
+      <div class="form-floating">
+        <input [(ngModel)]="filterCriteria.dateTo" type="datetime-local" class="form-control" id="floatingInputGrid">
+        <label for="floatingInputGrid">Date/Time A</label>
+      </div>
+    </div>
+    <!-- button -->
+    <div class="d-grid gap-2 col-6 mx-auto">
+      <button class="btn btn-outline-success mb-2" (click)="filterData()">Filtrer</button>
+      <button class="btn btn-outline-info mb-2" (click)="downloadPDF()">Télécharger l'historique</button>
+    </div>
+  </div>
+  <!-- display of historique -->
+  <div style="max-height: 400px; overflow-y: auto;">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">Num</th>
+          <th scope="col">State</th>
+          <th scope="col">Date/time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sensor of filteredData">
+          <td>{{sensor.id}}</td>
+          <td>{{sensor.state}}</td>
+          <td>{{api.format_date(sensor.dateTime).full_datetime}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ajout -->
+<div class="modal fade" id="modal_add_waterlevelsensors" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header ">
+        <h1 class="modal-title fs-5">Ajouter Waterlevelsensors</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          #closeWaterLevelModal></button>
+      </div>
+      <div class="modal-body">
+        <app-add-waterlevelsensors (cb_add_waterlevelsensors)="after_add($event)"></app-add-waterlevelsensors>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- modification -->
+<div class="modal fade" id="modal_edit_waterlevelsensors" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header" data-bs-theme="dark">
+        <h1 class="modal-title fs-5">Modifier Waterlevelsensors</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+          (click)="on_close_modal_edit()"></button>
+      </div>
+      <div class="modal-body">
+        <app-edit-waterlevelsensors *ngIf="waterlevelsensors_to_edit" (cb_edit_waterlevelsensors)="after_edit($event)"
+          [waterlevelsensors_to_edit]="waterlevelsensors_to_edit"></app-edit-waterlevelsensors>
+      </div>
+    </div>
+  </div>
+</div>

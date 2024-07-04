@@ -1,0 +1,18 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+
+.clickable-icon {
+    font-size: 3rem;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .clickable-icon:hover {
+    color: #007bff;
+  }
+  
+  /* .background-image-container {
+    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSaxxXY9TuP-8kovJxbgudXb52ZpNYBQmNLg&s');
+    background-size: cover;
+    background-position: center;
+} */

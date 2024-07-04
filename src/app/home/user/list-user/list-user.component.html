@@ -1,0 +1,82 @@
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<!-- entete -->
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title text-uppercase font-medium text-center m-3"><strong>MANAGE USERS</strong></h5>
+        </div>
+        <!-- list -->
+        <div class="table-responsive">
+          <table class="table no-wrap user-table mb-0">
+            <thead>
+              <tr>
+                <th scope="col" class="border-0 text-uppercase font-medium pl-4">NUM</th>
+                <th scope="col" class="border-0 text-uppercase font-medium">FIRST NAME</th>
+                <th scope="col" class="border-0 text-uppercase font-medium">LAST NAME</th>
+                <th scope="col" class="border-0 text-uppercase font-medium">EMAIL</th>
+                <th scope="col" class="border-0 text-uppercase font-medium">PHONE</th>
+                <th scope="col" class="border-0 text-uppercase font-medium">RELATIONSHIP</th>
+                <th scope="col" class="border-0 text-uppercase font-medium">STATUS</th>
+                <th scope="col" class="border-0 text-uppercase font-medium">ACTIONS</th>
+              </tr>
+            </thead>
+            
+            <tbody> 
+              @for (one_user of les_users; track $index) {
+                <tr  *ngIf="one_user.authority_id != 1">
+                  <td class="pl-4">{{$index}}</td>
+                  <td class="font-medium mb-0">{{one_user.firstName}}</td>
+                  <td class="font-medium mb-0">{{one_user.lastName}}</td>
+                  <td class="text-muted">{{one_user.email}}</td>
+                  <td class="text-muted">{{one_user.phone}}</td>
+                  <td class="text-muted">{{one_user.relationship}}</td>
+                  <td [ngStyle]="{'color': one_user.status === 'actif' ? 'green' : 'red' }" class="font-medium mb-0">{{one_user.status}}</td>
+                  <td>
+                        <a (click)="on_click_edit(one_user)" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2" data-bs-toggle="modal"
+                          data-bs-target="#modal_edit_status_user" #closeEditUserModal>
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn btn-outline-danger btn-circle btn-lg btn-circle ml-2" href="javascript:void(0);"
+                          (click)=delete_user({id:one_user.id})><i class="fa fa-trash"></i></a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <!-- ajout -->
+        <div class="modal fade" id="modal_add_user" data-bs-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header " data-bs-theme="dark">
+                <h1 class="modal-title fs-5">Ajouter User</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <app-add-user (cb_add_user)="after_add($event)"></app-add-user>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- modification -->
+        <div class="modal fade" id="modal_edit_status_user" data-bs-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5">Modification</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                  (click)="on_close_modal_edit()"></button>
+              </div>
+              <div class="modal-body">
+                <app-edit-user *ngIf="user_to_edit" (cb_edit_user)="after_edit($event)"
+                  [user_to_edit]="user_to_edit"></app-edit-user>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

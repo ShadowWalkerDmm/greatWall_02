@@ -1,0 +1,226 @@
+<div class="container-sm">
+  <!-- table of window status -->
+  <div class="table-responsive">
+    <table class="table table-bordered caption-top">
+      <caption>
+        <h1 class="mt-5"><strong>GESTION DES FENÊTRES</strong></h1>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          @if (authority_id == 1) {
+          <button class="btn btn-outline-primary" data-bs-toggle="modal"
+            data-bs-target="#modal_add_windowstatus">Ajout</button>
+          }
+          <button class="btn btn-outline-info" data-bs-toggle="modal"
+            data-bs-target="#modal_historique_window">Historique</button>
+        </div>
+      </caption>
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">FENÊTRES</th>
+          <th scope="col">État</th>
+          @if (authority_id == 1) {
+          <th scope="col">Actions</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @if (!api.latestSensorData || !api.latestSensorData.windows){
+        @for (window of les_windowstatuss; track $index){
+        <tr>
+          <td>
+            <div class="container">
+              <!-- backside -->
+              <div class="back">
+                <img src="../../../../assets/window.avif" />
+              </div>
+
+              <!-- window -->
+              <div class="windows">
+                <div class="leftSide"></div>
+                <div class="rightSide " [ngClass]="{'hover-effect': window.status === 'opened'}"></div>
+              </div>
+            </div>
+            <div class="text-center">{{window.name}}</div>
+          </td>
+          <td>{{window.status}}</td>
+          @if (authority_id == 1) {
+          <td>
+            <button class="btn btn-outline-danger" href="javascript:void(0);"
+              (click)=delete_windowstatus({id:window.id})><i class="bi bi-trash"></i></button>
+          </td>
+          }
+          }
+          }@else if(api.latestSensorData ){
+          @for (item of api.latestSensorData.windows; track $index) {
+          @for (window of les_windowstatuss; track $index){
+        <tr>
+          @if (item.idWindow == window.id){
+          <td>
+            <div class="container">
+              <!-- backside -->
+              <div class="back">
+                <img src="../../../../assets/window.avif" />
+              </div>
+
+              <!-- window -->
+              <div class="windows">
+                <div class="leftSide"></div>
+                <div class="rightSide " [ngClass]="{'hover-effect': item.stateWindow === 'opened'}"></div>
+              </div>
+            </div>
+            <div class="text-center">{{item.nameWindow}}</div>
+          </td>
+          <td>{{item.stateWindow}}</td>
+          @if (authority_id == 1) {
+          <td>
+            <button class="btn btn-outline-danger" href="javascript:void(0);"
+              (click)=delete_windowstatus({id:item.idWindow})><i class="bi bi-trash"></i></button>
+          </td>
+          }
+          }@else {
+          <td>
+            <div class="container">
+              <!-- backside -->
+              <div class="back">
+                <img src="../../../../assets/window.avif" />
+              </div>
+
+              <!-- window -->
+              <div class="windows">
+                <div class="leftSide"></div>
+                <div class="rightSide " [ngClass]="{'hover-effect': window.status === 'opened'}"></div>
+              </div>
+            </div>
+            <div class="text-center">{{window.name}}</div>
+          </td>
+          <td>{{window.status}}</td>
+          @if (authority_id == 1) {
+          <td>
+            <button class="btn btn-outline-danger" href="javascript:void(0);"
+              (click)=delete_windowstatus({id:window.id})><i class="bi bi-trash"></i></button>
+          </td>
+          }
+          }
+          }
+          }
+          }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ajout -->
+  <div class="modal fade" id="modal_add_windowstatus" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header ">
+          <h1 class="modal-title fs-5">Ajouter Windowstatus</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            #closeWindowsModal></button>
+        </div>
+        <div class="modal-body">
+          <app-add-windowstatus (cb_add_windowstatus)="after_add($event)"></app-add-windowstatus>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modification -->
+  <div class="modal fade" id="modal_edit_windowstatus" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Modifier Windowstatus</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="on_close_modal_edit()"></button>
+        </div>
+        <div class="modal-body">
+          <app-edit-windowstatus *ngIf="windowstatus_to_edit" (cb_edit_windowstatus)="after_edit($event)"
+            [windowstatus_to_edit]="windowstatus_to_edit"></app-edit-windowstatus>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- historique -->
+  <div class="modal fade" id="modal_historique_window" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header ">
+          <h1 class="modal-title fs-5">Historique des fenêtres</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeDoorModal></button>
+        </div>
+        <div class="modal-body">
+          <!-- Tri -->
+          <div class="mb-3">
+            <div class="row g-2">
+              <!-- Windows -->
+              <div class="col-md m-1">
+                <div class="form-floating">
+                  <select class="form-select" id="floatingSelectGrid" [(ngModel)]="filterCriteria.idWindow">
+                    <option value="">All</option>
+                    @for (item of les_windowstatuss; track $index) {
+                    <option value="{{item.id}}">{{item.name}}</option>
+                    }
+                  </select>
+                  <label for="floatingSelectGrid">Name</label>
+                </div>
+              </div>
+              <!-- states -->
+              <div class="col-md m-1">
+                <div class="form-floating">
+                  <select class="form-select" id="floatingSelectGrid" [(ngModel)]="filterCriteria.state">
+                    <option value="">All</option>
+                    <option value="opened">Opened</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                  <label for="floatingSelectGrid">States</label>
+                </div>
+              </div>
+              <!-- Date/Time from -->
+              <div class="col-md m-1">
+                <div class="form-floating">
+                  <input [(ngModel)]="filterCriteria.dateFrom" type="datetime-local" class="form-control"
+                    id="floatingInputGrid">
+                  <label for="floatingInputGrid">Date/Time De</label>
+                </div>
+              </div>
+              <!-- Date/time to -->
+              <div class="col-md m-1">
+                <div class="form-floating">
+                  <input [(ngModel)]="filterCriteria.dateTo" type="datetime-local" class="form-control"
+                    id="floatingInputGrid">
+                  <label for="floatingInputGrid">Date/Time A</label>
+                </div>
+              </div>
+              <!-- button -->
+              <button class="btn btn-outline-success" (click)="filterData()">Filtrer</button>
+              <button class="btn btn-outline-info" (click)="downloadPDF()">Télécharger l'historique</button>
+            </div>
+          </div>
+        </div>
+        <!-- display of historique -->
+        <div style="max-height: 400px; overflow-y: auto;">
+          <div class="container-sm">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Num</th>
+                  <th scope="col">FENÊTRES</th>
+                  <th scope="col">Action</th>
+                  <th scope="col">Date/time</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (window of filteredData; track $index) {
+                <tr>
+                  <td>{{$index +1}}</td>
+                  <td>{{window.name}}</td>
+                  <td>{{window.state}}</td>
+                  <td>{{api.format_date(window.uploadDate).full_datetime}}</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

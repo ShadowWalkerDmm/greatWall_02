@@ -1,0 +1,79 @@
+<div *ngIf="api.latestSensorData && api.latestSensorData?.smoke" class="container mb-5 mt-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="text-center mt-3">Smoke Detection</h1>
+      <div class="alert-smoke"
+      [ngClass]="{'show': alert,
+            'bg-smoke-detected': api.latestSensorData?.smoke === 'alert',
+            'bg-smoke-stopped': api.latestSensorData?.smoke === 'stoped'}">
+        <div *ngIf="api.latestSensorData">
+          <p *ngIf="api.latestSensorData?.smoke === 'alert'">Attention fumée détecté!</p>
+          <p *ngIf="api.latestSensorData?.smoke === 'stoped'">Pas de fumée detectée!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="!api.latestSensorData || !api.latestSensorData?.smoke" class="container mb-5 mt-5">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="text-center mt-3">Smoke Detection</h1>
+        <div class="alert-smoke"
+        [ngClass]="{'show': alert,
+              'bg-smoke-detected': this.les_smokesensorss[0]?.state === 'alert',
+              'bg-smoke-stopped': this.les_smokesensorss[0]?.state === 'stoped'}">
+          <div >
+            <p *ngIf="les_smokesensorss[0]?.state === 'alert'">Attention fumée détecté!</p>
+            <p *ngIf="les_smokesensorss[0]?.state === 'stoped'">Pas de fumée detectée!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+
+  <!-- Date/time filter -->
+  <!-- Date/time from -->
+  <div class="container mb-3">
+    <div class="row g-2">
+      <div class="col-md">
+        <div class="form-floating">
+          <input [(ngModel)]="filterCriteria.dateFrom" type="datetime-local" class="form-control"
+            id="floatingInputGrid">
+          <label for="floatingInputGrid">Date/Time De</label>
+        </div>
+      </div>
+      <!-- Date/time to -->
+      <div class="col-md">
+        <div class="form-floating">
+          <input [(ngModel)]="filterCriteria.dateTo" type="datetime-local" class="form-control" id="floatingInputGrid">
+          <label for="floatingInputGrid">Date/Time A</label>
+        </div>
+      </div>
+      <!-- button -->
+      <div class="d-grid gap-2 col-6 mx-auto">
+        <button class="btn btn-outline-success m-2" (click)="filterData()">Filtrer</button>
+        <button class="btn btn-outline-info mb-2" (click)="downloadPDF()">Télécharger l'historique</button>
+      </div>
+    </div>
+    <!-- display of historique -->
+    <div style="max-height: 400px; overflow-y: auto;">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Num</th>
+            <th scope="col">State</th>
+            <th scope="col">Date/time</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (smoke of filteredData; track $index) {
+          <tr>
+            <td>{{$index + 1}}</td>
+            <td>{{smoke.state}}</td>
+            <td>{{api.format_date(smoke.updated_at).full_datetime}}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>

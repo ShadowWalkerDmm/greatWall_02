@@ -1,0 +1,44 @@
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.alert-motion {
+  position: relative;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.alert-motion.show {
+  display: block;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.bg-motion-detected {
+  background-color: #dc3545;
+  color: #fff;
+  animation: fadeInOut 2s infinite;
+}
+
+.bg-motion-stoped {
+  background-color: #28a745; 
+  color: #fff;
+}
+
+.alert-content {
+  font-size: 16px;
+  margin: 0;
+}

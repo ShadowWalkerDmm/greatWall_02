@@ -1,0 +1,86 @@
+<div class="container mt-5">
+  <!-- entete -->
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 class="mt-3"><strong>GESTION DES CAMERA</strong></h1>
+    @if (authority_id == 1) {
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal_add_camera">Ajout</button>
+    </div>
+    }
+  </div>
+  <!-- list -->
+  <div class="container mt-5">
+    <div class="container text-center">
+      <div class="row row-cols-2">
+        @for (cctv of les_cameras; track $index) {
+        <div class="card m-2" style="width: 40%">
+          <img class="card-img-top" id="stream" [src]="cctv.link" crossorigin="" (click)="openStreamModal(cctv.link,cctv.name)" data-bs-toggle="modal" data-bs-target="#modal_specifique_stream">
+          <div class="card-body">
+            <p class="card-text">{{cctv.name}}</p>
+          </div>
+          @if (authority_id == 1) {
+            <div class="d-grid gap-2 d-md-block">
+              <button (click)="on_click_edit(cctv)" class="btn btn-outline-primary m-2" data-bs-toggle="modal"
+                data-bs-target="#modal_edit_camera">
+                Modifier
+              </button>
+              <button class="btn btn-outline-danger" href="javascript:void(0);"
+                (click)=delete_camera({id_camera:cctv.id_camera})>
+                Supprimer
+              </button>
+            </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ajout -->
+  <div class="modal fade" id="modal_add_camera" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header ">
+          <h1 class="modal-title fs-5">Ajouter Camera</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <app-add-camera (cb_add_camera)="after_add($event)"></app-add-camera>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- modification -->
+  <div class="modal fade" id="modal_edit_camera" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">Modifier Camera</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            (click)="on_close_modal_edit()"></button>
+        </div>
+        <div class="modal-body">
+          <app-edit-camera *ngIf="camera_to_edit" (cb_edit_camera)="after_edit($event)"
+            [camera_to_edit]="camera_to_edit"></app-edit-camera>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- display specifique stream -->
+<div class="modal fade" id="modal_specifique_stream" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fs-5">{{currentStreamName}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img [src]="currentStreamLink" alt="Stream" class="img-fluid" id="imagetodisplay" crossorigin="">
+      </div>
+    </div>
+  </div>
+</div>

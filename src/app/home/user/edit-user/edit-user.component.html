@@ -1,0 +1,28 @@
+<form [formGroup]="reactiveForm_edit_user " (ngSubmit)="onSubmit_edit_user ()" #form_edit_user="ngForm" class="row">
+    <!-- Status -->
+    <div class="form-group col-sm-6">
+        <label>status</label>
+        <select class="form-control category-select" id="exampleFormControlSelect1" formControlName="status"
+            [ngClass]="{ 'is-invalid': submitted && f.status.errors }">
+            <option value="actif">actif</option>
+            <option value="inactif">inactif</option>
+        </select>
+    </div>
+    <!-- Authority -->
+    <div class="form-group col-sm-6">
+        <label>Niveau d'accès</label>
+        <select class="form-control category-select" id="exampleFormControlSelect1" formControlName="authority_id"
+            [ngClass]="{ 'is-invalid': submitted && f.authority_id.errors }">
+            <option value="1">Admin</option>
+            <option value="2">User</option>
+        </select>
+    </div>
+
+</form>
+<!-- vous pouvez valider votre formulaire n'importe ou -->
+
+<div class="text-center m-2">
+    <button type="button" class="btn btn-primary m-2" [disabled]="loading_edit_user "
+        (click)="form_edit_user .ngSubmit.emit()">{{loading_edit_user ?"En cours ...":"Valider"}}</button>
+    <!-- <button class="btn btn-secondary m-2" type="reset" (click)="onReset_edit_user ()">Vider</button> -->
+</div>
